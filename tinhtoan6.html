@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tính Lãi Suất & Vay Nợ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin: 30px 0 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .welcome-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .welcome-header p {
+            font-size: 1.2rem;
+            color: #444;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        @media (min-width: 768px) {
+            .main-menu {
+                flex-direction: row;
+                justify-content: center;
+                gap: 50px;
+            }
+        }
+
+        .menu-option {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 30px 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .menu-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #aaa;
+        }
+
+        .menu-option h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .menu-option p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .calculation-section {
+            display: none;
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #0066cc;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .sub-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .sub-option {
+            padding: 16px 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-size: 1.05rem;
+        }
+
+        .sub-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .sub-option.active {
+            background-color: #d4e6ff;
+            border-color: #0066cc;
+            font-weight: 600;
+        }
+
+        .sub-sub-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0 25px 30px;
+            border-left: 3px solid #ddd;
+            padding-left: 20px;
+        }
+
+        .sub-sub-option {
+            padding: 14px 18px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .sub-sub-option:hover {
+            background-color: #e8e8e8;
+        }
+
+        .sub-sub-option.active {
+            background-color: #e1f0ff;
+            border-color: #4d94ff;
+            font-weight: 500;
+        }
+
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .input-group input[type="number"] {
+            padding: 14px 16px;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: #fff;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .input-group input[type="number"]:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0,102,204,0.2);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-row input {
+            flex: 2;
+            padding: 14px 16px;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        .input-row select {
+            flex: 1;
+            padding: 14px 16px;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: #fff;
+            min-width: 120px;
+            transition: all 0.3s;
+        }
+
+        .input-row input:focus,
+        .input-row select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0,102,204,0.2);
+        }
+
+        .result-field {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            border-left: 5px solid #0066cc;
+        }
+
+        .result-field h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #004080;
+            margin: 10px 0;
+        }
+
+        .calculate-button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            align-self: flex-start;
+        }
+
+        .calculate-button:hover {
+            background-color: #0052a3;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .special-description {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: #5d4037;
+            border-radius: 4px;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        input, select {
+            font-family: inherit;
+            font-size: inherit;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <header class="welcome-header" id="welcome-screen">
+        <h1>CHÀO MỪNG</h1>
+        <p>Đây là trang web nơi sẽ giúp bạn tính toán các số liệu về lãi suất ngân hàng và vay nợ.</p>
+    </header>
+
+    <div class="main-menu" id="main-menu">
+        <div class="menu-option" id="bank-interest-option">
+            <h2>Tính toán lãi suất ngân hàng</h2>
+            <p>Tính lãi kép, số tiền nhận được, thời gian cần thiết và các yếu tố liên quan đến gửi tiết kiệm.</p>
+        </div>
+        <div class="menu-option" id="loan-option">
+            <h2>Tính toán vay nợ</h2>
+            <p>Tính khoản trả góp, tổng lãi phải trả, thời gian trả nợ và các yếu tố liên quan đến vay vốn.</p>
+        </div>
+    </div>
+
+    <!-- Phần tính toán lãi suất ngân hàng -->
+    <section class="calculation-section" id="bank-interest-section">
+        <button class="back-button" id="back-from-bank">← Quay lại menu chính</button>
+        <h2 class="section-title">Tính toán lãi suất ngân hàng</h2>
+        
+        <div class="sub-menu">
+            <div class="sub-option active" data-problem="future-value">Tính số tiền nhận được sau thời gian gửi</div>
+            <div class="sub-option" data-problem="time-needed">Tính thời gian cần thiết để đạt số tiền mong muốn</div>
+            <div class="sub-option" data-problem="initial-deposit">Tính số tiền gốc cần gửi ban đầu</div>
+            <div class="sub-option" data-problem="interest-rate">Tính lãi suất ngân hàng</div>
+            <div class="sub-option" data-problem="regular-deposit">Gửi thêm tiền định kỳ hàng năm</div>
+        </div>
+
+        <div class="special-description hidden" id="regular-deposit-description">
+            <strong>Bài toán đặc biệt:</strong> Bạn gửi tiền gốc ban đầu. Từ năm thứ 2 trở đi, mỗi năm bạn gửi thêm một khoản tiền cố định vào tài khoản. Tính toán các yếu tố liên quan.
+        </div>
+
+        <div class="sub-sub-menu hidden" id="regular-sub-menu">
+            <div class="sub-sub-option active" data-regular-problem="future-value-regular">Tính tổng tiền sau n năm</div>
+            <div class="sub-sub-option" data-regular-problem="deposit-amount">Tính số tiền cần gửi thêm mỗi năm</div>
+            <div class="sub-sub-option" data-regular-problem="time-regular">Tính thời gian cần thiết</div>
+            <div class="sub-sub-option" data-regular-problem="rate-regular">Tính lãi suất cần thiết</div>
+        </div>
+
+        <div class="input-form" id="basic-problem-form"></div>
+
+        <div class="result-field hidden" id="result-container">
+            <h3>Kết quả</h3>
+            <div id="result-text">Kết quả sẽ hiển thị ở đây sau khi tính toán</div>
+            <div class="result-value" id="result-value">-</div>
+        </div>
+    </section>
+
+    <!-- Phần tính toán vay nợ -->
+    <section class="calculation-section" id="loan-section">
+        <button class="back-button" id="back-from-loan">← Quay lại menu chính</button>
+        <h2 class="section-title">Tính toán vay nợ</h2>
+        
+        <div class="sub-menu">
+            <div class="sub-option active" data-loan-problem="total-interest">Tính tổng tiền lãi phải trả</div>
+            <div class="sub-option" data-loan-problem="monthly-payment">Tính số tiền phải trả mỗi kỳ</div>
+            <div class="sub-option" data-loan-problem="loan-interest-rate">Tính lãi suất cho vay</div>
+            <div class="sub-option" data-loan-problem="loan-period">Tính thời gian trả nợ</div>
+        </div>
+
+        <div class="input-form" id="loan-form"></div>
+
+        <div class="result-field hidden" id="loan-result-container">
+            <h3>Kết quả</h3>
+            <div id="loan-result-text">Kết quả sẽ hiển thị ở đây sau khi tính toán</div>
+            <div class="result-value" id="loan-result-value">-</div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Công cụ tính toán tài chính cá nhân | Phiên bản 1.0</p>
+        <p>Lưu ý: Kết quả tính toán chỉ mang tính chất tham khảo</p>
+    </footer>
+
+    <script>
+        // ========== BIẾN TOÀN CỤC ==========
+        let currentBankProblem = 'future-value';
+        let currentRegularProblem = 'future-value-regular';
+        let currentLoanProblem = 'total-interest';
+
+        const bankInputsCache = {
+            'future-value': {},
+            'time-needed': {},
+            'initial-deposit': {},
+            'interest-rate': {},
+            'regular-deposit': {
+                'future-value-regular': {},
+                'deposit-amount': {},
+                'time-regular': {},
+                'rate-regular': {}
+            }
+        };
+
+        const loanInputsCache = {
+            'total-interest': {},
+            'monthly-payment': {},
+            'loan-interest-rate': {},
+            'loan-period': {}
+        };
+
+        // ========== HÀM CHUNG ==========
+        function getTimeUnitOptions(interestUnit) {
+            const options = {
+                'năm': ['năm', 'tháng'],
+                'tháng': ['tháng', 'năm']
+            };
+            return options[interestUnit] || ['năm', 'tháng'];
+        }
+
+        function getInterestUnitOptions() {
+            return ['năm', 'tháng'];
+        }
+
+        function formatMoney(amount) {
+            if (isNaN(amount) || amount === null || amount === undefined) return '0';
+            return Math.round(amount).toLocaleString('vi-VN');
+        }
+
+        function showSection(sectionId) {
+            document.getElementById(sectionId).style.display = 'block';
+        }
+        
+        function hideSection(sectionId) {
+            document.getElementById(sectionId).style.display = 'none';
+        }
+
+        // ========== XỬ LÝ SỰ KIỆN CHUNG ==========
+        document.getElementById('bank-interest-option').addEventListener('click', () => {
+            showSection('bank-interest-section');
+            hideSection('main-menu');
+            hideSection('welcome-screen');
+            renderBankForm();
+        });
+
+        document.getElementById('loan-option').addEventListener('click', () => {
+            showSection('loan-section');
+            hideSection('main-menu');
+            hideSection('welcome-screen');
+            renderLoanForm();
+        });
+
+        document.getElementById('back-from-bank').addEventListener('click', () => {
+            showSection('main-menu');
+            showSection('welcome-screen');
+            hideSection('bank-interest-section');
+        });
+
+        document.getElementById('back-from-loan').addEventListener('click', () => {
+            showSection('main-menu');
+            showSection('welcome-screen');
+            hideSection('loan-section');
+        });
+
+        // ========== PHẦN LÃI SUẤT NGÂN HÀNG (GIỮ NGUYÊN) ==========
+        document.querySelectorAll('#bank-interest-section .sub-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('#bank-interest-section .sub-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const newProblem = this.getAttribute('data-problem');
+                
+                if (newProblem === 'regular-deposit' && currentBankProblem !== 'regular-deposit') {
+                    bankInputsCache['regular-deposit'] = {
+                        'future-value-regular': {},
+                        'deposit-amount': {},
+                        'time-regular': {},
+                        'rate-regular': {}
+                    };
+                    document.querySelectorAll('#regular-sub-menu .sub-sub-option').forEach((opt, index) => {
+                        opt.classList.remove('active');
+                        if (index === 0) opt.classList.add('active');
+                    });
+                    currentRegularProblem = 'future-value-regular';
+                }
+                
+                currentBankProblem = newProblem;
+                updateBankUI();
+                renderBankForm();
+            });
+        });
+
+        document.querySelectorAll('#regular-sub-menu .sub-sub-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('#regular-sub-menu .sub-sub-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                currentRegularProblem = this.getAttribute('data-regular-problem');
+                renderBankForm();
+            });
+        });
+
+        function updateBankUI() {
+            const isRegularDeposit = currentBankProblem === 'regular-deposit';
+            document.getElementById('regular-deposit-description').classList.toggle('hidden', !isRegularDeposit);
+            document.getElementById('regular-sub-menu').classList.toggle('hidden', !isRegularDeposit);
+            document.getElementById('result-container').classList.add('hidden');
+        }
+
+        function renderBankForm() {
+            const form = document.getElementById('basic-problem-form');
+            form.innerHTML = '';
+            
+            let inputsHTML = '';
+            let calculateButtonText = 'Tính toán';
+            
+            if (currentBankProblem === 'regular-deposit') {
+                const cache = bankInputsCache['regular-deposit'][currentRegularProblem] || {};
+                
+                switch(currentRegularProblem) {
+                    case 'future-value-regular':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền gửi thêm mỗi năm (từ năm thứ 2)</label>
+                                <input type="number" id="deposit-amount" placeholder="Nhập số tiền gửi thêm hàng năm (VND)" value="${cache['deposit-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        <option value="năm" ${cache['interest-unit'] === 'năm' ? 'selected' : ''}>%/năm</option>
+                                        <option value="tháng" ${cache['interest-unit'] === 'tháng' ? 'selected' : ''}>%/tháng</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        ${getTimeUnitOptions(cache['interest-unit'] || 'năm').map(unit => 
+                                            `<option value="${unit}" ${cache['time-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="note">Đơn vị thời gian phụ thuộc vào đơn vị lãi suất</div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính tổng tiền';
+                        break;
+                        
+                    case 'deposit-amount':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Tổng số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        <option value="năm" ${cache['interest-unit'] === 'năm' ? 'selected' : ''}>%/năm</option>
+                                        <option value="tháng" ${cache['interest-unit'] === 'tháng' ? 'selected' : ''}>%/tháng</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        ${getTimeUnitOptions(cache['interest-unit'] || 'năm').map(unit => 
+                                            `<option value="${unit}" ${cache['time-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính số tiền cần gửi thêm';
+                        break;
+                        
+                    case 'time-regular':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền gửi thêm mỗi năm</label>
+                                <input type="number" id="deposit-amount" placeholder="Nhập số tiền gửi thêm hàng năm (VND)" value="${cache['deposit-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Tổng số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        ${getInterestUnitOptions().map(unit => 
+                                            `<option value="${unit}" ${cache['interest-unit'] === unit ? 'selected' : ''}>%/${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="note">Kết quả thời gian sẽ tính theo đơn vị của lãi suất</div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính thời gian cần thiết';
+                        break;
+                        
+                    case 'rate-regular':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền gửi thêm mỗi năm</label>
+                                <input type="number" id="deposit-amount" placeholder="Nhập số tiền gửi thêm hàng năm (VND)" value="${cache['deposit-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Tổng số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        <option value="năm" ${cache['time-unit'] === 'năm' ? 'selected' : ''}>năm</option>
+                                        <option value="tháng" ${cache['time-unit'] === 'tháng' ? 'selected' : ''}>tháng</option>
+                                    </select>
+                                </div>
+                                <div class="note">Kết quả lãi suất sẽ tính theo đơn vị thời gian</div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính lãi suất cần thiết';
+                        break;
+                }
+            } else {
+                const cache = bankInputsCache[currentBankProblem] || {};
+                
+                switch(currentBankProblem) {
+                    case 'future-value':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        ${getInterestUnitOptions().map(unit => 
+                                            `<option value="${unit}" ${cache['interest-unit'] === unit ? 'selected' : ''}>%/${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        ${getTimeUnitOptions(cache['interest-unit'] || 'năm').map(unit => 
+                                            `<option value="${unit}" ${cache['time-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="note">Đơn vị thời gian phụ thuộc vào đơn vị lãi suất</div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính số tiền nhận được';
+                        break;
+                        
+                    case 'time-needed':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        ${getInterestUnitOptions().map(unit => 
+                                            `<option value="${unit}" ${cache['interest-unit'] === unit ? 'selected' : ''}>%/${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="note">Kết quả thời gian sẽ tính theo đơn vị của lãi suất</div>
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính thời gian cần thiết';
+                        break;
+                        
+                    case 'initial-deposit':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Lãi suất</label>
+                                <div class="input-row">
+                                    <input type="number" id="interest-rate" placeholder="Nhập lãi suất" value="${cache['interest-rate'] || ''}">
+                                    <select id="interest-unit">
+                                        ${getInterestUnitOptions().map(unit => 
+                                            `<option value="${unit}" ${cache['interest-unit'] === unit ? 'selected' : ''}>%/${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        ${getTimeUnitOptions(cache['interest-unit'] || 'năm').map(unit => 
+                                            `<option value="${unit}" ${cache['time-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                        `;
+                        calculateButtonText = 'Tính số tiền gốc cần thiết';
+                        break;
+                        
+                    case 'interest-rate':
+                        inputsHTML = `
+                            <div class="input-group">
+                                <label>Số tiền gốc ban đầu (P)</label>
+                                <input type="number" id="principal" placeholder="Nhập số tiền gốc (VND)" value="${cache.principal || ''}">
+                            </div>
+                            <div class="input-group">
+                                <label>Thời gian gửi</label>
+                                <div class="input-row">
+                                    <input type="number" id="time-period" placeholder="Nhập thời gian" value="${cache['time-period'] || ''}">
+                                    <select id="time-unit">
+                                        <option value="năm" ${cache['time-unit'] === 'năm' ? 'selected' : ''}>năm</option>
+                                        <option value="tháng" ${cache['time-unit'] === 'tháng' ? 'selected' : ''}>tháng</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Số tiền mong muốn (A)</label>
+                                <input type="number" id="target-amount" placeholder="Nhập số tiền mong muốn (VND)" value="${cache['target-amount'] || ''}">
+                            </div>
+                            <div class="note">Kết quả lãi suất sẽ tính theo đơn vị thời gian</div>
+                        `;
+                        calculateButtonText = 'Tính lãi suất cần thiết';
+                        break;
+                }
+            }
+            
+            form.innerHTML = inputsHTML + `<button class="calculate-button" id="calculate-button">${calculateButtonText}</button>`;
+            
+            const interestUnitSelect = document.getElementById('interest-unit');
+            const timeUnitSelect = document.getElementById('time-unit');
+            
+            if (interestUnitSelect && timeUnitSelect) {
+                interestUnitSelect.addEventListener('change', function() {
+                    const selectedUnit = this.value;
+                    const currentTimeUnit = timeUnitSelect.value;
+                    const options = getTimeUnitOptions(selectedUnit);
+                    
+                    timeUnitSelect.innerHTML = options.map(unit => 
+                        `<option value="${unit}" ${unit === currentTimeUnit ? 'selected' : ''}>${unit}</option>`
+                    ).join('');
+                });
+            }
+            
+            document.getElementById('calculate-button').addEventListener('click', calculateBankProblem);
+        }
+
+        function calculateBankProblem() {
+            saveBankInputsToCache();
+            
+            let result, resultText, resultValue;
+            
+            if (currentBankProblem === 'regular-deposit') {
+                const principal = parseFloat(document.getElementById('principal')?.value) || 0;
+                const depositAmount = parseFloat(document.getElementById('deposit-amount')?.value) || 0;
+                const interestRate = parseFloat(document.getElementById('interest-rate')?.value) || 0;
+                const interestUnit = document.getElementById('interest-unit')?.value || 'năm';
+                const timePeriod = parseFloat(document.getElementById('time-period')?.value) || 0;
+                const timeUnit = document.getElementById('time-unit')?.value || 'năm';
+                const targetAmount = parseFloat(document.getElementById('target-amount')?.value) || 0;
+                
+                let r, n;
+                
+                switch(interestUnit) {
+                    case 'năm': r = interestRate / 100; break;
+                    case 'tháng': r = interestRate / 100 * 12; break;
+                    default: r = interestRate / 100;
+                }
+                
+                switch(timeUnit) {
+                    case 'năm': n = timePeriod; break;
+                    case 'tháng': n = timePeriod / 12; break;
+                    default: n = timePeriod;
+                }
+                
+                switch(currentRegularProblem) {
+                    case 'future-value-regular':
+                        const futureValueLump = principal * Math.pow(1 + r, n);
+                        const futureValueAnnuity = depositAmount * ((Math.pow(1 + r, n) - (1 + r)) / r);
+                        result = futureValueLump + futureValueAnnuity;
+                        
+                        resultText = `Với số tiền gốc ban đầu <strong>${formatMoney(principal)} VND</strong>, gửi thêm <strong>${formatMoney(depositAmount)} VND</strong> mỗi năm (từ năm thứ 2), lãi suất <strong>${interestRate}%/${interestUnit}</strong>, sau <strong>${timePeriod} ${timeUnit}</strong>:`;
+                        resultValue = `${formatMoney(result)} VND`;
+                        break;
+                        
+                    case 'deposit-amount':
+                        const futureValuePrincipal = principal * Math.pow(1 + r, n);
+                        if (targetAmount <= futureValuePrincipal) {
+                            resultText = `Số tiền mong muốn phải lớn hơn số tiền từ gốc ban đầu (${formatMoney(futureValuePrincipal)} VND)`;
+                            resultValue = "0 VND";
+                        } else {
+                            result = (targetAmount - futureValuePrincipal) * r / (Math.pow(1 + r, n) - (1 + r));
+                            resultText = `Để đạt được <strong>${formatMoney(targetAmount)} VND</strong> sau <strong>${timePeriod} ${timeUnit}</strong> với số gốc ban đầu <strong>${formatMoney(principal)} VND</strong>, lãi suất <strong>${interestRate}%/${interestUnit}</strong>, bạn cần gửi thêm mỗi năm (từ năm thứ 2):`;
+                            resultValue = `${formatMoney(result)} VND`;
+                        }
+                        break;
+                        
+                    case 'time-regular':
+                        let nYears = 1;
+                        let calculatedAmount = 0;
+                        while (calculatedAmount < targetAmount && nYears < 100) {
+                            const fvLump = principal * Math.pow(1 + r, nYears);
+                            const fvAnnuity = depositAmount * ((Math.pow(1 + r, nYears) - (1 + r)) / r);
+                            calculatedAmount = fvLump + fvAnnuity;
+                            nYears++;
+                        }
+                        result = nYears - 1;
+                        
+                        let resultInInterestUnit;
+                        switch(interestUnit) {
+                            case 'năm': resultInInterestUnit = result; break;
+                            case 'tháng': resultInInterestUnit = result * 12; break;
+                            default: resultInInterestUnit = result;
+                        }
+                        
+                        resultText = `Để đạt được <strong>${formatMoney(targetAmount)} VND</strong> với số gốc ban đầu <strong>${formatMoney(principal)} VND</strong>, gửi thêm <strong>${formatMoney(depositAmount)} VND</strong> mỗi năm (từ năm thứ 2), lãi suất <strong>${interestRate}%/${interestUnit}</strong>, bạn cần thời gian:`;
+                        resultValue = `${resultInInterestUnit.toFixed(2)} ${interestUnit}`;
+                        break;
+                        
+                    case 'rate-regular':
+                        let rateGuess = 0.01;
+                        let diff = 1;
+                        for (let i = 0; i < 1000 && Math.abs(diff) > 0.0001; i++) {
+                            const fvLump = principal * Math.pow(1 + rateGuess, n);
+                            const fvAnnuity = depositAmount * ((Math.pow(1 + rateGuess, n) - (1 + rateGuess)) / rateGuess);
+                            const calculated = fvLump + fvAnnuity;
+                            diff = calculated - targetAmount;
+                            
+                            if (diff > 0) {
+                                rateGuess *= 0.99;
+                            } else {
+                                rateGuess *= 1.01;
+                            }
+                        }
+                        result = rateGuess * 100;
+                        
+                        let resultInTimeUnit;
+                        switch(timeUnit) {
+                            case 'năm': resultInTimeUnit = result; break;
+                            case 'tháng': resultInTimeUnit = result / 12; break;
+                            default: resultInTimeUnit = result;
+                        }
+                        
+                        resultText = `Để đạt được <strong>${formatMoney(targetAmount)} VND</strong> sau <strong>${timePeriod} ${timeUnit}</strong> với số gốc ban đầu <strong>${formatMoney(principal)} VND</strong>, gửi thêm <strong>${formatMoney(depositAmount)} VND</strong> mỗi năm (từ năm thứ 2), bạn cần lãi suất:`;
+                        resultValue = `${resultInTimeUnit.toFixed(2)}%/${timeUnit}`;
+                        break;
+                }
+            } else {
+                const principal = parseFloat(document.getElementById('principal')?.value) || 0;
+                const interestRate = parseFloat(document.getElementById('interest-rate')?.value) || 0;
+                const interestUnit = document.getElementById('interest-unit')?.value || 'năm';
+                const timePeriod = parseFloat(document.getElementById('time-period')?.value) || 0;
+                const timeUnit = document.getElementById('time-unit')?.value || 'năm';
+                const targetAmount = parseFloat(document.getElementById('target-amount')?.value) || 0;
+                
+                let r, n;
+                
+                switch(interestUnit) {
+                    case 'năm': r = interestRate / 100; break;
+                    case 'tháng': r = interestRate / 100 * 12; break;
+                    default: r = interestRate / 100;
+                }
+                
+                switch(timeUnit) {
+                    case 'năm': n = timePeriod; break;
+                    case 'tháng': n = timePeriod / 12; break;
+                    default: n = timePeriod;
+                }
+                
+                switch(currentBankProblem) {
+                    case 'future-value':
+                        result = principal * Math.pow(1 + r, n);
+                        resultText = `Với số tiền gốc <strong>${formatMoney(principal)} VND</strong>, lãi suất <strong>${interestRate}%/${interestUnit}</strong>, sau <strong>${timePeriod} ${timeUnit}</strong>:`;
+                        resultValue = `${formatMoney(result)} VND`;
+                        break;
+                        
+                    case 'time-needed':
+                        if (principal === 0 || targetAmount <= principal) {
+                            resultText = "Số tiền gốc phải lớn hơn 0 và số tiền mong muốn phải lớn hơn số gốc";
+                            resultValue = "Không tính được";
+                        } else {
+                            const yearsNeeded = Math.log(targetAmount / principal) / Math.log(1 + r);
+                            
+                            let resultInInterestUnit;
+                            switch(interestUnit) {
+                                case 'năm': resultInInterestUnit = yearsNeeded; break;
+                                case 'tháng': resultInInterestUnit = yearsNeeded * 12; break;
+                                default: resultInInterestUnit = yearsNeeded;
+                            }
+                            
+                            resultText = `Để từ <strong>${formatMoney(principal)} VND</strong> đạt được <strong>${formatMoney(targetAmount)} VND</strong> với lãi suất <strong>${interestRate}%/${interestUnit}</strong>:`;
+                            resultValue = `${resultInInterestUnit.toFixed(2)} ${interestUnit}`;
+                        }
+                        break;
+                        
+                    case 'initial-deposit':
+                        result = targetAmount / Math.pow(1 + r, n);
+                        resultText = `Để đạt được <strong>${formatMoney(targetAmount)} VND</strong> sau <strong>${timePeriod} ${timeUnit}</strong> với lãi suất <strong>${interestRate}%/${interestUnit}</strong>, bạn cần gửi số tiền ban đầu:`;
+                        resultValue = `${formatMoney(result)} VND`;
+                        break;
+                        
+                    case 'interest-rate':
+                        if (principal === 0 || n === 0) {
+                            resultText = "Số tiền gốc và thời gian phải lớn hơn 0";
+                            resultValue = "Không tính được";
+                        } else {
+                            const yearlyRate = (Math.pow(targetAmount / principal, 1/n) - 1) * 100;
+                            
+                            let resultInTimeUnit;
+                            switch(timeUnit) {
+                                case 'năm': resultInTimeUnit = yearlyRate; break;
+                                case 'tháng': resultInTimeUnit = yearlyRate / 12; break;
+                                default: resultInTimeUnit = yearlyRate;
+                            }
+                            
+                            resultText = `Để từ <strong>${formatMoney(principal)} VND</strong> đạt được <strong>${formatMoney(targetAmount)} VND</strong> sau <strong>${timePeriod} ${timeUnit}</strong>:`;
+                            resultValue = `${resultInTimeUnit.toFixed(2)}%/${timeUnit}`;
+                        }
+                        break;
+                }
+            }
+            
+            document.getElementById('result-text').innerHTML = resultText;
+            document.getElementById('result-value').textContent = resultValue;
+            document.getElementById('result-container').classList.remove('hidden');
+        }
+
+        function saveBankInputsToCache() {
+            if (currentBankProblem === 'regular-deposit') {
+                const cache = {};
+                cache.principal = document.getElementById('principal')?.value || '';
+                cache['deposit-amount'] = document.getElementById('deposit-amount')?.value || '';
+                cache['interest-rate'] = document.getElementById('interest-rate')?.value || '';
+                cache['interest-unit'] = document.getElementById('interest-unit')?.value || 'năm';
+                cache['time-period'] = document.getElementById('time-period')?.value || '';
+                cache['time-unit'] = document.getElementById('time-unit')?.value || 'năm';
+                cache['target-amount'] = document.getElementById('target-amount')?.value || '';
+                
+                bankInputsCache['regular-deposit'][currentRegularProblem] = cache;
+            } else {
+                const cache = {};
+                cache.principal = document.getElementById('principal')?.value || '';
+                cache['interest-rate'] = document.getElementById('interest-rate')?.value || '';
+                cache['interest-unit'] = document.getElementById('interest-unit')?.value || 'năm';
+                cache['time-period'] = document.getElementById('time-period')?.value || '';
+                cache['time-unit'] = document.getElementById('time-unit')?.value || 'năm';
+                cache['target-amount'] = document.getElementById('target-amount')?.value || '';
+                
+                bankInputsCache[currentBankProblem] = cache;
+            }
+        }
+
+        // ========== PHẦN VAY NỢ (MỚI) ==========
+        document.querySelectorAll('#loan-section .sub-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('#loan-section .sub-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                currentLoanProblem = this.getAttribute('data-loan-problem');
+                renderLoanForm();
+                document.getElementById('loan-result-container').classList.add('hidden');
+            });
+        });
+
+        function renderLoanForm() {
+            const form = document.getElementById('loan-form');
+            const cache = loanInputsCache[currentLoanProblem] || {};
+            
+            let inputsHTML = '';
+            let calculateButtonText = 'Tính toán';
+            
+            // Xác định các trường cần hiển thị
+            switch(currentLoanProblem) {
+                case 'total-interest':
+                    inputsHTML = `
+                        <div class="input-group">
+                            <label>Số tiền vay (P)</label>
+                            <input type="number" id="loan-amount" placeholder="Nhập số tiền vay (VND)" value="${cache['loan-amount'] || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Lãi suất vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-rate" placeholder="Nhập lãi suất" value="${cache['loan-rate'] || ''}">
+                                <select id="loan-rate-unit">
+                                    <option value="năm" ${cache['loan-rate-unit'] === 'năm' ? 'selected' : ''}>%/năm</option>
+                                    <option value="tháng" ${cache['loan-rate-unit'] === 'tháng' ? 'selected' : ''}>%/tháng</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Thời hạn vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-period" placeholder="Nhập thời gian" value="${cache['loan-period'] || ''}">
+                                <select id="loan-period-unit">
+                                    ${getTimeUnitOptions(cache['loan-rate-unit'] || 'năm').map(unit => 
+                                        `<option value="${unit}" ${cache['loan-period-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="note">Đơn vị thời gian phụ thuộc vào đơn vị lãi suất</div>
+                        </div>
+                    `;
+                    calculateButtonText = 'Tính tổng lãi';
+                    break;
+                    
+                case 'monthly-payment':
+                    inputsHTML = `
+                        <div class="input-group">
+                            <label>Số tiền vay (P)</label>
+                            <input type="number" id="loan-amount" placeholder="Nhập số tiền vay (VND)" value="${cache['loan-amount'] || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Lãi suất vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-rate" placeholder="Nhập lãi suất" value="${cache['loan-rate'] || ''}">
+                                <select id="loan-rate-unit">
+                                    <option value="năm" ${cache['loan-rate-unit'] === 'năm' ? 'selected' : ''}>%/năm</option>
+                                    <option value="tháng" ${cache['loan-rate-unit'] === 'tháng' ? 'selected' : ''}>%/tháng</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Thời hạn vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-period" placeholder="Nhập thời gian" value="${cache['loan-period'] || ''}">
+                                <select id="loan-period-unit">
+                                    ${getTimeUnitOptions(cache['loan-rate-unit'] || 'năm').map(unit => 
+                                        `<option value="${unit}" ${cache['loan-period-unit'] === unit ? 'selected' : ''}>${unit}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="note">Đơn vị thời gian phụ thuộc vào đơn vị lãi suất</div>
+                        </div>
+                    `;
+                    calculateButtonText = 'Tính khoản trả hàng tháng';
+                    break;
+                    
+                case 'loan-interest-rate':
+                    inputsHTML = `
+                        <div class="input-group">
+                            <label>Số tiền vay (P)</label>
+                            <input type="number" id="loan-amount" placeholder="Nhập số tiền vay (VND)" value="${cache['loan-amount'] || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Khoản trả mỗi kỳ (EMI)</label>
+                            <input type="number" id="monthly-payment" placeholder="Nhập số tiền trả mỗi kỳ (VND)" value="${cache['monthly-payment'] || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Thời hạn vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-period" placeholder="Nhập thời gian" value="${cache['loan-period'] || ''}">
+                                <select id="loan-period-unit">
+                                    <option value="năm" ${cache['loan-period-unit'] === 'năm' ? 'selected' : ''}>năm</option>
+                                    <option value="tháng" ${cache['loan-period-unit'] === 'tháng' ? 'selected' : ''}>tháng</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="note">Kết quả lãi suất sẽ tính theo đơn vị thời gian</div>
+                    `;
+                    calculateButtonText = 'Tính lãi suất vay';
+                    break;
+                    
+                case 'loan-period':
+                    inputsHTML = `
+                        <div class="input-group">
+                            <label>Số tiền vay (P)</label>
+                            <input type="number" id="loan-amount" placeholder="Nhập số tiền vay (VND)" value="${cache['loan-amount'] || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Lãi suất vay</label>
+                            <div class="input-row">
+                                <input type="number" id="loan-rate" placeholder="Nhập lãi suất" value="${cache['loan-rate'] || ''}">
+                                <select id="loan-rate-unit">
+                                    ${getInterestUnitOptions().map(unit => 
+                                        `<option value="${unit}" ${cache['loan-rate-unit'] === unit ? 'selected' : ''}>%/${unit}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="note">Kết quả thời gian sẽ tính theo đơn vị của lãi suất</div>
+                        </div>
+                        <div class="input-group">
+                            <label>Khoản trả mỗi kỳ (EMI)</label>
+                            <input type="number" id="monthly-payment" placeholder="Nhập số tiền trả mỗi kỳ (VND)" value="${cache['monthly-payment'] || ''}">
+                        </div>
+                    `;
+                    calculateButtonText = 'Tính thời hạn vay';
+                    break;
+            }
+            
+            form.innerHTML = inputsHTML + `<button class="calculate-button" id="calculate-loan-button">${calculateButtonText}</button>`;
+            
+            // Gán sự kiện cho select lãi suất
+            const loanRateUnitSelect = document.getElementById('loan-rate-unit');
+            const loanPeriodUnitSelect = document.getElementById('loan-period-unit');
+            
+            if (loanRateUnitSelect && loanPeriodUnitSelect) {
+                loanRateUnitSelect.addEventListener('change', function() {
+                    const selectedUnit = this.value;
+                    const currentPeriodUnit = loanPeriodUnitSelect.value;
+                    const options = getTimeUnitOptions(selectedUnit);
+                    
+                    loanPeriodUnitSelect.innerHTML = options.map(unit => 
+                        `<option value="${unit}" ${unit === currentPeriodUnit ? 'selected' : ''}>${unit}</option>`
+                    ).join('');
+                });
+            }
+            
+            document.getElementById('calculate-loan-button').addEventListener('click', calculateLoanProblem);
+        }
+
+        function calculateLoanProblem() {
+            saveLoanInputsToCache();
+            
+            const loanAmount = parseFloat(document.getElementById('loan-amount')?.value) || 0;
+            const loanRate = parseFloat(document.getElementById('loan-rate')?.value) || 0;
+            const loanRateUnit = document.getElementById('loan-rate-unit')?.value || 'năm';
+            const loanPeriod = parseFloat(document.getElementById('loan-period')?.value) || 0;
+            const loanPeriodUnit = document.getElementById('loan-period-unit')?.value || 'năm';
+            const monthlyPayment = parseFloat(document.getElementById('monthly-payment')?.value) || 0;
+            
+            // Chuyển đổi về đơn vị tháng (vì tính toán vay thường dùng tháng)
+            let monthlyInterestRate, totalMonths;
+            
+            switch(loanRateUnit) {
+                case 'năm': monthlyInterestRate = loanRate / 100 / 12; break;
+                case 'tháng': monthlyInterestRate = loanRate / 100; break;
+                default: monthlyInterestRate = loanRate / 100 / 12;
+            }
+            
+            switch(loanPeriodUnit) {
+                case 'năm': totalMonths = loanPeriod * 12; break;
+                case 'tháng': totalMonths = loanPeriod; break;
+                default: totalMonths = loanPeriod * 12;
+            }
+            
+            let result, resultText, resultValue;
+            
+            switch(currentLoanProblem) {
+                case 'total-interest':
+                    if (loanAmount === 0 || loanRate === 0 || loanPeriod === 0) {
+                        resultText = "Vui lòng nhập đầy đủ các giá trị";
+                        resultValue = "Không tính được";
+                    } else {
+                        const emi = loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalMonths) / (Math.pow(1 + monthlyInterestRate, totalMonths) - 1);
+                        const totalPayment = emi * totalMonths;
+                        const totalInterest = totalPayment - loanAmount;
+                        
+                        result = totalInterest;
+                        resultText = `Với khoản vay <strong>${formatMoney(loanAmount)} VND</strong>, lãi suất <strong>${loanRate}%/${loanRateUnit}</strong>, thời hạn <strong>${loanPeriod} ${loanPeriodUnit}</strong>:<br>
+                                    Khoản trả hàng tháng: <strong>${formatMoney(emi)} VND</strong><br>
+                                    Tổng số tiền trả: <strong>${formatMoney(totalPayment)} VND</strong>`;
+                        resultValue = `Tổng lãi: ${formatMoney(totalInterest)} VND`;
+                    }
+                    break;
+                    
+                case 'monthly-payment':
+                    if (loanAmount === 0 || loanRate === 0 || loanPeriod === 0) {
+                        resultText = "Vui lòng nhập đầy đủ các giá trị";
+                        resultValue = "Không tính được";
+                    } else {
+                        const emi = loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalMonths) / (Math.pow(1 + monthlyInterestRate, totalMonths) - 1);
+                        const totalPayment = emi * totalMonths;
+                        const totalInterest = totalPayment - loanAmount;
+                        
+                        result = emi;
+                        resultText = `Với khoản vay <strong>${formatMoney(loanAmount)} VND</strong>, lãi suất <strong>${loanRate}%/${loanRateUnit}</strong>, thời hạn <strong>${loanPeriod} ${loanPeriodUnit}</strong>:<br>
+                                    Tổng số tiền trả: <strong>${formatMoney(totalPayment)} VND</strong><br>
+                                    Tổng tiền lãi: <strong>${formatMoney(totalInterest)} VND</strong>`;
+                        resultValue = `Trả hàng tháng: ${formatMoney(emi)} VND`;
+                    }
+                    break;
+                    
+                case 'loan-interest-rate':
+                    if (loanAmount === 0 || loanPeriod === 0 || monthlyPayment === 0) {
+                        resultText = "Vui lòng nhập đầy đủ các giá trị";
+                        resultValue = "Không tính được";
+                    } else {
+                        // Giải phương trình để tìm lãi suất
+                        let rateGuess = 0.01;
+                        for (let i = 0; i < 1000; i++) {
+                            const calculatedEMI = loanAmount * rateGuess * Math.pow(1 + rateGuess, totalMonths) / (Math.pow(1 + rateGuess, totalMonths) - 1);
+                            const diff = calculatedEMI - monthlyPayment;
+                            
+                            if (Math.abs(diff) < 0.01) break;
+                            
+                            if (diff > 0) {
+                                rateGuess *= 0.99;
+                            } else {
+                                rateGuess *= 1.01;
+                            }
+                        }
+                        
+                        // Chuyển về đơn vị của thời gian
+                        let resultRate;
+                        switch(loanPeriodUnit) {
+                            case 'năm': resultRate = rateGuess * 12 * 100; break;
+                            case 'tháng': resultRate = rateGuess * 100; break;
+                            default: resultRate = rateGuess * 12 * 100;
+                        }
+                        
+                        result = resultRate;
+                        resultText = `Với khoản vay <strong>${formatMoney(loanAmount)} VND</strong>, thời hạn <strong>${loanPeriod} ${loanPeriodUnit}</strong>, trả mỗi kỳ <strong>${formatMoney(monthlyPayment)} VND</strong>:`;
+                        resultValue = `Lãi suất: ${result.toFixed(2)}%/${loanPeriodUnit}`;
+                    }
+                    break;
+                    
+                case 'loan-period':
+                    if (loanAmount === 0 || loanRate === 0 || monthlyPayment === 0) {
+                        resultText = "Vui lòng nhập đầy đủ các giá trị";
+                        resultValue = "Không tính được";
+                    } else {
+                        // Tính số kỳ từ công thức EMI
+                        const periods = Math.log(monthlyPayment / (monthlyPayment - loanAmount * monthlyInterestRate)) / Math.log(1 + monthlyInterestRate);
+                        
+                        // Chuyển về đơn vị của lãi suất
+                        let resultPeriod;
+                        switch(loanRateUnit) {
+                            case 'năm': resultPeriod = periods / 12; break;
+                            case 'tháng': resultPeriod = periods; break;
+                            default: resultPeriod = periods / 12;
+                        }
+                        
+                        result = resultPeriod;
+                        resultText = `Với khoản vay <strong>${formatMoney(loanAmount)} VND</strong>, lãi suất <strong>${loanRate}%/${loanRateUnit}</strong>, trả mỗi kỳ <strong>${formatMoney(monthlyPayment)} VND</strong>:`;
+                        resultValue = `Thời hạn: ${result.toFixed(2)} ${loanRateUnit}`;
+                    }
+                    break;
+            }
+            
+            document.getElementById('loan-result-text').innerHTML = resultText;
+            document.getElementById('loan-result-value').textContent = resultValue;
+            document.getElementById('loan-result-container').classList.remove('hidden');
+        }
+
+        function saveLoanInputsToCache() {
+            const cache = {};
+            
+            cache['loan-amount'] = document.getElementById('loan-amount')?.value || '';
+            cache['loan-rate'] = document.getElementById('loan-rate')?.value || '';
+            cache['loan-rate-unit'] = document.getElementById('loan-rate-unit')?.value || 'năm';
+            cache['loan-period'] = document.getElementById('loan-period')?.value || '';
+            cache['loan-period-unit'] = document.getElementById('loan-period-unit')?.value || 'năm';
+            cache['monthly-payment'] = document.getElementById('monthly-payment')?.value || '';
+            
+            loanInputsCache[currentLoanProblem] = cache;
+        }
+
+        // Khởi tạo
+        updateBankUI();
+    </script>
+</body>
+</html>
